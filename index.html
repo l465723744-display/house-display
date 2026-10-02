@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>House Display</title>
+  <script>
+    const binUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSACT-I_HIqTarVdDRhZxbkJWynEydwnrbRP8FWd80caSbRje8DQV5QXjTdqiR1O-hNpUXNbtCa-mb_/pubhtml?gid=669011302&single=true";
+
+    const cleaningUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSACT-I_HIqTarVdDRhZxbkJWynEydwnrbRP8FWd80caSbRje8DQV5QXjTdqiR1O-hNpUXNbtCa-mb_/pubhtml?gid=1094758729&single=true";
+
+    const displayUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSACT-I_HIqTarVdDRhZxbkJWynEydwnrbRP8FWd80caSbRje8DQV5QXjTdqiR1O-hNpUXNbtCa-mb_/pubhtml?gid=1473546904&single=true";
+
+    function openDisplay() {
+      const now = new Date();
+
+      const parts = new Intl.DateTimeFormat("en-AU", {
+        timeZone: "Australia/Brisbane",
+        weekday: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(now);
+
+      const get = type =>
+        parts.find(p => p.type === type)?.value;
+
+      const weekday = get("weekday");
+      const hour = Number(get("hour"));
+      const minute = Number(get("minute"));
+      const totalMinutes = hour * 60 + minute;
+
+      let url = displayUrl;
+
+      // Tuesday 3:00 PM → Wednesday 6:00 AM
+      if (
+        (weekday === "Tue" && totalMinutes >= 900) ||
+        (weekday === "Wed" && totalMinutes < 360)
+      ) {
+        url = binUrl;
+      }
+
+      // Friday → Sunday
+      else if (
+        weekday === "Fri" ||
+        weekday === "Sat" ||
+        weekday === "Sun"
+      ) {
+        url = cleaningUrl;
+      }
+
+      window.location.replace(url);
+    }
+
+    openDisplay();
+  </script>
+</head>
+
+<body>
+</body>
+</html>
